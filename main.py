@@ -3,9 +3,23 @@ from models import QueryRequest
 from prompts import generate_sql_prompt
 from db import execute_query
 from openai_utils import client, generate_natural_response
+from fastapi.middleware.cors import CORSMiddleware  
 
 app = FastAPI()
+origins = [
+    "http://localhost:5173", 
+    "http://sipforecast.s3-website-us-east-1.amazonaws.com",  
+    "*", 
+]
 
+# Añadir CORSMiddleware al app
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins, 
+    allow_credentials=True,
+    allow_methods=["*"],  
+    allow_headers=["*"],  
+)
 @app.post("/analyze")
 async def analyze_data(request: QueryRequest):
     try:
